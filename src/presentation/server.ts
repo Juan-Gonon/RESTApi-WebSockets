@@ -21,16 +21,29 @@ export class Server {
     this.port = port
     this.routes = routes
     this.publicPath = publicPath
+
+    this.configure()
   }
 
-  public execute (): void {
-    this.app.get('*', (req, res) => {
+  private configure (): void {
+    // * Middleware
+    this.app.use(express.json())
+    this.app.use(express.urlencoded({ extended: true }))
+
+    // * Public Folder
+    this.app.use(express.static(this.publicPath))
+
+    // * Routes
+    this.app.use(this.routes)
+
+    // * SPA
+    this.app.get(/^\/(?!api).*/, (req, res) => {
       const indexPath = path.join(__dirname + `../../../${this.publicPath}/index.html`)
       res.sendFile(indexPath)
     })
+  }
 
-    // this.app.use(this.routes)
-
+  public start (): void {
     this.serverListener = this.app.listen(this.port, () => {
       console.log(`Server running on port ${this.port}`)
     })
