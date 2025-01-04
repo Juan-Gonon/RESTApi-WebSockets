@@ -24,8 +24,14 @@ export class TicketService {
     }
   ]
 
+  private readonly workingOnTickets: Ticket[] = []
+
   public get pendingTickets (): Ticket[] {
     return this.tickets.filter((ticket) => !ticket.handleAtDesk)
+  }
+
+  public get lastWorkingOnTickets (): Ticket[] {
+    return this.workingOnTickets.splice(0, 4)
   }
 
   public lastTicketNumber (): number {
@@ -55,6 +61,8 @@ export class TicketService {
 
     ticket.handleAtDesk = desk
     ticket.handleAt = new Date()
+
+    this.workingOnTickets.unshift({ ...ticket })
 
     // TODO WS
 
