@@ -3,7 +3,7 @@ import { UuidAdapter } from '../../config/uuid.adapter'
 import { Ticket } from '../../domain/interfaces/ticket'
 
 export class TicketService {
-  private readonly tickets: Ticket[] = [
+  public readonly tickets: Ticket[] = [
     {
       id: UuidAdapter.v4(),
       number: 1,
@@ -34,7 +34,7 @@ export class TicketService {
     return this.workingOnTickets.splice(0, 4)
   }
 
-  public lastTicketNumber (): number {
+  public get lastTicketNumber (): number {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.tickets.length > 0 ? this.tickets.at(-1)!.number : 0
   }
@@ -42,7 +42,7 @@ export class TicketService {
   public createTicket (): Ticket {
     const newTicket: Ticket = {
       id: UuidAdapter.v4(),
-      number: this.lastTicketNumber() + 1,
+      number: this.lastTicketNumber + 1,
       createdAt: new Date(),
       done: false
     }
