@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { UuidAdapter } from '../../config/uuid.adapter'
 import { Ticket } from '../../domain/interfaces/ticket'
+import { WssService } from './wss.service'
 
 export class TicketService {
+  constructor (private readonly wssService = WssService.instance) {}
   public readonly tickets: Ticket[] = [
     {
       id: UuidAdapter.v4(),
@@ -50,6 +52,7 @@ export class TicketService {
     this.tickets.push(newTicket)
 
     // TODO: WS
+    this.onTicketNumberChanged()
 
     return newTicket
   }
@@ -83,5 +86,9 @@ export class TicketService {
     })
 
     return { status: 'ok' }
+  }
+
+  private onTicketNumberChanged (): void {
+    this.wssService.sendMessage('on-ticket-count-changed', this.pendingTickets.length)
   }
 }
