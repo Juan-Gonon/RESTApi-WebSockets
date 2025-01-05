@@ -39,7 +39,7 @@ export class TicketService {
     return this.tickets.length > 0 ? this.tickets.at(-1)!.number : 0
   }
 
-  public createTicket (): Ticket {
+  public get createTicket (): Ticket {
     const newTicket: Ticket = {
       id: UuidAdapter.v4(),
       number: this.lastTicketNumber + 1,
