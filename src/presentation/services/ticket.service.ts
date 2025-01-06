@@ -5,7 +5,7 @@ import { WssService } from './wss.service'
 
 export class TicketService {
   constructor (private readonly wssService = WssService.instance) {}
-  public readonly tickets: Ticket[] = [
+  public tickets: Ticket[] = [
     {
       id: UuidAdapter.v4(),
       number: 1,
@@ -33,7 +33,7 @@ export class TicketService {
   }
 
   public get lastWorkingOnTickets (): Ticket[] {
-    return this.workingOnTickets.splice(0, 4)
+    return this.workingOnTickets.slice(0, 4)
   }
 
   public get lastTicketNumber (): number {
@@ -78,7 +78,7 @@ export class TicketService {
 
     if (!ticket) return { status: 'error', message: 'Ticket no encontrado' }
 
-    this.tickets.map((ticket) => {
+    this.tickets = this.tickets.map((ticket) => {
       if (ticket.id === id) {
         ticket.done = true
       }
