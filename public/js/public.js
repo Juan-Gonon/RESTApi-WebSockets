@@ -15,7 +15,7 @@ function renderTickets (tickets = []) {
   }
 }
 
-async function loadCurrentTickets (params) {
+async function loadCurrentTickets () {
   const tickets = await fetch('/api/ticket/working-on').then((res) => res.json())
 
   renderTickets(tickets)
@@ -23,4 +23,28 @@ async function loadCurrentTickets (params) {
 //   console.log(tickets)
 }
 
+function connectToWebSockets () {
+  // eslint-disable-next-line no-undef
+  const socket = new WebSocket('ws://localhost:3000/ws')
+
+  socket.onmessage = (event) => {
+    //  console.log(event.data) // onTicket-cont-changed
+    const { type, payload } = JSON.parse(event.data)
+    if (type !== 'on-working-changed') return
+    // lblPending.innerHTML = payload
+    renderTickets(payload)
+  }
+
+  socket.onclose = (event) => {
+    setTimeout(() => {
+      connectToWebSockets()
+    }, 1500)
+  }
+
+  socket.onopen = (event) => {
+    console.log('Connected')
+  }
+}
+
 loadCurrentTickets()
+connectToWebSockets()
